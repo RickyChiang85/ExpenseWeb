@@ -10,10 +10,10 @@ public class ExpenseWebTest
 {
     private IExpenseRepository _repo;
 
-    public ExpenseController GetSystemUnderTest()
+    public ExpenseApiController GetSystemUnderTest()
     {
         _repo = Substitute.For<IExpenseRepository>();
-        return new ExpenseController(_repo);
+        return new ExpenseApiController(_repo);
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class ExpenseWebTest
         var expense = new ExpenseModel { Id = 1, Title = "Expense 1", Amount = 100, Category = CategoryEnum.Food};
 
         // Act
-        var result = controller.UpdateExpense(expense);
+        var result = controller.UpdateExpense(1, expense);
 
         // Assert
         _repo.Received().Update(expense);
@@ -95,6 +95,6 @@ public class ExpenseWebTest
 
         // Assert
         _repo.Received().Delete(1);
-        Assert.IsType<OkResult>(result);
+        Assert.IsType<NoContentResult>(result);
     }
 }

@@ -7,52 +7,56 @@ namespace ExpenseWeb.Controllers;
 /// <summary>
 /// CRUD for expenses
 /// </summary>
-public class ExpenseController
+[ApiController]
+public class ExpenseApiController : ControllerBase
 {
     #region Fields
 
-    private IExpenseRepository _repo;
+    private readonly IExpenseRepository _repo;
+
     #endregion
 
     #region Constructors
 
-    public ExpenseController(IExpenseRepository repo) { _repo = repo; }
+    public ExpenseApiController(IExpenseRepository repo) { _repo = repo; }
 
     #endregion
 
     #region Methods
 
     [HttpGet]
+    [Route("/api/expense")]
     public IActionResult GetExpenses()
     {
-        return new OkObjectResult(_repo.ReadAll());
+        return Ok(_repo.ReadAll());
     }
 
     [HttpGet]
-    public IActionResult GetExpense(int id)
-    {
-        return new OkObjectResult(_repo.ReadById(id));
-    }
+    [Route("/api/expense/{id}")]
+    public IActionResult GetExpense(int id) { return Ok(_repo.ReadById(id)); }
 
     [HttpPost]
+    [Route("/api/expense")]
     public IActionResult CreateExpense(ExpenseModel expense)
     {
         _repo.Create(expense);
-        return new OkResult();
+        return Ok();
     }
 
     [HttpPut]
-    public IActionResult UpdateExpense(ExpenseModel expense)
+    [Route("/api/expense/{id}")]
+    public IActionResult UpdateExpense(int id, ExpenseModel expense)
     {
         _repo.Update(expense);
-        return new OkResult();
+        return Ok();
     }
 
     [HttpDelete]
+    [Route("/api/expense/{id}")]
     public IActionResult DeleteExpense(int id)
     {
         _repo.Delete(id);
-        return new OkResult();
+        return NoContent();
     }
 
     #endregion

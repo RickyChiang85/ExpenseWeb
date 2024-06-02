@@ -1,0 +1,26 @@
+@host = http://localhost:5283
+
+### Get expense
+GET {{host}}/api/expense
+
+### Create expense
+POST {{host}}/api/expense
+Content-Type: application/json
+
+{
+    "amount": 100,
+    "title": "Test",
+    "createDate": "2020-01-01",
+    "category": 1
+}
+
+### Update expense
+PUT {{host}}/api/expense/1
+Content-Type: application/json
+
+{
+    "amount": 100,
+    "title": "Test",
+    "createDate": "2020-01-01"
+}
+

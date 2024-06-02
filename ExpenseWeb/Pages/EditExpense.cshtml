@@ -1,0 +1,95 @@
+@page
+@model ExpenseWeb.Pages.EditExpense
+
+
+<div>
+    <h1 class="display-4">Edit Expense</h1>
+    <!-- 一個用來編輯 Expense 支出的畫面 -->
+    <!-- Title, Amount, CreateDate 編輯畫面, Category 為一個 Select 可選食衣住行四項 -->
+    <form method="post">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" name="title"/>
+        </div>
+        <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="number" class="form-control" id="amount" name="amount"/>
+        </div>
+        <div class="form-group">
+            <label for="createDate">Create Date</label>
+            <input type="date" class="form-control" id="createDate" name="createDate"/>
+        </div>
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select class="form-control" id="category" name="category">
+                <option value="0">食</option>
+                <option value="1">衣</option>
+                <option value="2">住</option>
+                <option value="3">行</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <!-- return Index -->
+        <a class="nav-link text-dark" asp-area="" asp-page="/Index">Back</a>
+    </form>
+    <script>
+        // 透過 GET /api/expense/{id} 取得 expense 資料, 並顯示在表單中
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        fetch(`/api/expense/${id}`)
+            .then(response => response.json())
+            .then(expense => {
+                document.querySelector('#title').value = expense.title;
+                document.querySelector('#amount').value = expense.amount;
+                document.querySelector('#createDate').value = expense.date;
+                document.querySelector('#category').value = expense.category;
+            });
+
+        // use js to send api, to PUT /api/expense/{id}
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.querySelector('#title').value;
+            const amount = new Number(document.querySelector('#amount').value);
+            const createDate = document.querySelector('#createDate').value;
+            const category = new Number(document.querySelector('#category').value);
+            const response = await fetch(`/api/expense/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title,
+                    amount,
+                    createDate,
+                    category
+                })
+            });
+            if (response.status === 200) {
+                alert('Edit expense success');
+                window.location.href = '/Index';
+            } else {
+                var error = response.json();
+                alert('Edit expense fail - ' + error.message);
+            }
+        });
+
+        // createDate check, 日期格式字串，發生日期不能晚於 1 年前
+        document.querySelector('#createDate').addEventListener('change', (e) => {
+            // check createDate, 日期格式字串
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)) {
+                alert('Create Date must be yyyy-MM-dd');
+                e.target.value = '';
+                return;
+            }
+
+            // 發生日期不能晚於 1 年前
+            //const createDate = new Date(e.target.value);
+            //const now = new Date();
+            //if (now - createDate < 0 || now - createDate > 365 * 24 * 60 * 60 * 1000) {
+            //    alert('Create Date must be within 1 year');
+            //    e.target.value = '';
+            //}
+        });
+    </script>
+
+    </div>

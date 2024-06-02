@@ -31,7 +31,7 @@ public class ExpenseModel
     /// <summary>
     /// 發生日期和時間
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateTime CreateDate { get; set; }
 
     /// <summary>
     /// 分類

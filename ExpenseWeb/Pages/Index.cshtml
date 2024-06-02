@@ -4,7 +4,70 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
+<div>
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <!-- 一個用來 List Expense 支出的畫面 -->
+    <div class="row">
+        <div class="col-12">
+            <h2>Expenses</h2>
+            <!-- 新增 expense -->
+            <a class="btn btn-primary" asp-area="" asp-page="/CreateExpense">Create</a>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Amount</th>
+                    <th>CreateDate</th>
+                    <th>Category</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <script>
+                    // 使用 javascript 讀取 /api/expense 的資料, 並顯示在表格中
+                    fetch('/api/expense')
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(expense => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td>${expense.title}</td>
+                                    <td>${expense.amount}</td>
+                                    <td>${expense.createDate}</td>
+                                    <td>${expense.category}</td>
+                                    <td>
+                                        <!-- create a link to direct to EditExpense razor page -->
+                                        <a href="/EditExpense?id=${expense.id}">Edit</a>
+                                        |
+                                        <a href="#${expense.id}">Delete</a>
+                                    </td>
+                                `;
+                                document.querySelector('tbody').appendChild(tr);
+                            });
+                        });
+
+
+                    // delete expense, use js trigger api DELETE /api/expense/{id}
+                    document.querySelector('tbody').addEventListener('click', async (e) => {
+                        if (e.target.tagName === 'A' && e.target.innerText === 'Delete') {
+                            e.preventDefault();
+                            // get id from href hash
+                            const id = e.target.href.split('#')[1];
+                            const response = await fetch(`/api/expense/${id}`, {
+                                method: 'DELETE'
+                            });
+                            if (response.status === 200) {
+                                alert('Delete expense success');
+                                window.location.reload();
+                            } else {
+                                alert('Delete expense fail');
+                            }
+                        }
+                    });
+                </script>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>

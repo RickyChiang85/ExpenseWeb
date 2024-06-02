@@ -1,5 +1,10 @@
+using ExpenseWeb.Domain;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<IExpenseRepository, ExpenseRepository>();
+
+builder.Services.AddControllers();
 // Add services to the container.
 builder.Services.AddRazorPages();
 
@@ -13,13 +18,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
 // app.UseAuthorization();
-
+app.MapControllers();
 app.MapRazorPages();
 
 app.Run();
