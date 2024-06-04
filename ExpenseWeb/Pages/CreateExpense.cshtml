@@ -52,11 +52,13 @@
           category
         })
       });
-      if (response.ok) {
+      if (response.status === 200) {
         alert('Create expense success');
         window.location.href = '/Index';
       } else {
-        alert('Create expense fail');
+        // alert('Create expense fail');
+        const error = await response.json();
+        alert('Create expense fail: ' + error.message);
       }
     });
 

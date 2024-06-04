@@ -68,7 +68,7 @@
                 alert('Edit expense success');
                 window.location.href = '/Index';
             } else {
-                var error = response.json();
+                const error = response.json();
                 alert('Edit expense fail - ' + error.message);
             }
         });

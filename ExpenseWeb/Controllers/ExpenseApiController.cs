@@ -39,6 +39,11 @@ public class ExpenseApiController : ControllerBase
     [Route("/api/expense")]
     public IActionResult CreateExpense(ExpenseModel expense)
     {
+        if (!TryValidateModel(expense, out var result))
+        {
+            return result;
+        }
+
         _repo.Create(expense);
         return Ok();
     }
@@ -47,6 +52,11 @@ public class ExpenseApiController : ControllerBase
     [Route("/api/expense/{id}")]
     public IActionResult UpdateExpense(int id, ExpenseModel expense)
     {
+        if (!TryValidateModel(expense, out var result))
+        {
+            return result;
+        }
+
         _repo.Update(expense);
         return Ok();
     }
@@ -57,6 +67,19 @@ public class ExpenseApiController : ControllerBase
     {
         _repo.Delete(id);
         return NoContent();
+    }
+
+    private bool TryValidateModel(ExpenseModel model, out IActionResult result)
+    {
+        // 檢查 CreateDate 不能晚於 1 年前
+        if (model.CreateDate < DateTime.Now.AddYears(-1))
+        {
+            result = BadRequest(new ErrorModel("CreateDate cannot be more than 1 year ago"));
+            return false;
+        }
+
+        result = null;
+        return true;
     }
 
     #endregion
